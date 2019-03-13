@@ -24,15 +24,19 @@ class Linkify extends StatelessWidget {
   /// Removes http/https from shown URLS
   final bool humanize;
 
-  const Linkify({
-    Key key,
-    this.text,
-    this.style,
-    this.linkStyle,
-    this.onOpen,
-    this.textDirection,
-    this.humanize = false,
-  }) : super(key: key);
+  /// link replacements
+  final List<String> aliases;
+
+  const Linkify(
+      {Key key,
+      this.text,
+      this.style,
+      this.linkStyle,
+      this.onOpen,
+      this.textDirection,
+      this.humanize = false,
+      this.aliases})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,20 +44,20 @@ class Linkify extends StatelessWidget {
       softWrap: true,
       textDirection: textDirection,
       text: buildTextSpan(
-        text: text,
-        style: Theme.of(context).textTheme.body1.merge(style),
-        linkStyle: Theme.of(context)
-            .textTheme
-            .body1
-            .merge(style)
-            .copyWith(
-              color: Colors.blueAccent,
-              decoration: TextDecoration.underline,
-            )
-            .merge(linkStyle),
-        onOpen: onOpen,
-        humanize: humanize,
-      ),
+          text: text,
+          style: Theme.of(context).textTheme.body1.merge(style),
+          linkStyle: Theme.of(context)
+              .textTheme
+              .body1
+              .merge(style)
+              .copyWith(
+                color: Colors.blueAccent,
+                decoration: TextDecoration.underline,
+              )
+              .merge(linkStyle),
+          onOpen: onOpen,
+          humanize: humanize,
+          aliases: aliases ?? <String>[]),
     );
   }
 }
@@ -65,6 +69,7 @@ TextSpan buildTextSpan({
   TextStyle linkStyle,
   LinkCallback onOpen,
   bool humanize = false,
+  List<String> aliases
 }) {
   void _onOpen(String url) {
     if (onOpen != null) {
@@ -75,6 +80,7 @@ TextSpan buildTextSpan({
   final elements = linkify(
     text,
     humanize: humanize,
+    aliases: aliases
   );
 
   return TextSpan(

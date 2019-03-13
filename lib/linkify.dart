@@ -33,8 +33,12 @@ final _linkifyRegex = RegExp(
 /// Turns [text] into a list of [LinkifyElement]
 ///
 /// Use [humanize] to remove http/https from the start of the URL shown.
-List<LinkifyElement> linkify(String text, {bool humanize = false, List<String> aliases, int aliasIndex=0}) {
+List<LinkifyElement> linkify(String text,
+    {bool humanize = false, List<String> aliases, int aliasIndex = 0}) {
   final list = List<LinkifyElement>();
+  if (aliases == null) {
+    aliases = [];
+  }
 
   if (text == null || text.isEmpty) {
     return list;
@@ -55,7 +59,9 @@ List<LinkifyElement> linkify(String text, {bool humanize = false, List<String> a
         print("humanizing ${match.group(2)}");
         list.add(LinkElement(
           match.group(2),
-          aliases?.length??-1 >= aliasIndex ? aliases[aliasIndex] : match.group(2).replaceFirst(RegExp(r"https?://"), ""),
+          aliases.length >= aliasIndex
+              ? aliases[aliasIndex]
+              : match.group(2).replaceFirst(RegExp(r"https?://"), ""),
         ));
       } else {
         print("not humanizing ${match.group(2)}");
@@ -63,7 +69,8 @@ List<LinkifyElement> linkify(String text, {bool humanize = false, List<String> a
       }
     }
 
-    list.addAll(linkify(text, humanize: humanize));
+    list.addAll(linkify(text,
+        humanize: humanize, aliases: aliases, aliasIndex: ++aliasIndex));
   }
 
   return list;

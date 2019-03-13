@@ -63,25 +63,20 @@ class Linkify extends StatelessWidget {
 }
 
 /// Raw TextSpan builder for more control on the RichText
-TextSpan buildTextSpan({
-  String text,
-  TextStyle style,
-  TextStyle linkStyle,
-  LinkCallback onOpen,
-  bool humanize = false,
-  List<String> aliases
-}) {
+TextSpan buildTextSpan(
+    {String text,
+    TextStyle style,
+    TextStyle linkStyle,
+    LinkCallback onOpen,
+    bool humanize = false,
+    List<String> aliases}) {
   void _onOpen(String url) {
     if (onOpen != null) {
       onOpen(url);
     }
   }
 
-  final elements = linkify(
-    text,
-    humanize: humanize,
-    aliases: aliases
-  );
+  final elements = linkify(text, humanize: humanize, aliases: aliases);
 
   return TextSpan(
     children: elements.map<TextSpan>(
